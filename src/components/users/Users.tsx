@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import useUsers from "../../hooks/useUsers.ts";
 import useUserFilter from "../../hooks/useUserFilter.ts";
 import useUserSort from "../../hooks/useUserSortOrder.ts";
@@ -66,4 +66,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default React.memo(UserList);

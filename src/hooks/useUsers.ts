@@ -4,7 +4,7 @@ import { getUsers } from "../api/requests/users";
 const useUsers = () => {
     const { data, isLoading, isError, error } = useQuery(
         'users',
-        () => getUsers().then((response) => response.data));
+        () => getUsers().then((response) => response.data))
 
     return { data, isLoading, isError, error };
 }
