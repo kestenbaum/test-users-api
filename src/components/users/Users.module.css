@@ -7,3 +7,17 @@
    text-align: center; 
    margin-bottom: 25px;
 }
+
+.loading {
+    padding-top: 30px;
+}
+
+.error {
+    padding-top: 30px;
+}
+
+.users {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
