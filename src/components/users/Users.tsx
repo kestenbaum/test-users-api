@@ -1,75 +1,69 @@
-import { FC, useState } from 'react';
-import { useQuery } from "react-query";
-import { getUsers } from "../../api/requests/users";
-import User from "../user/User";
-import style from "../users/Users.module.css";
+import { useMemo } from 'react';
+import useUsers from "../../hooks/useUsers.ts";
+import useUserFilter from "../../hooks/useUserFilter.ts";
+import useUserSort from "../../hooks/useUserSortOrder.ts";
+import useDebounce from "../../hooks/useDebounce.ts";
+import User from "../user/User.tsx";
+import style from "./Users.module.css";
 
+const UserList = () => {
+    const { data: users, isLoading, isError, error } = useUsers();
+    const { filter, handleFilterChange } = useUserFilter();
+    const { sortOrder, toggleSortOrder } = useUserSort();
+    const debouncedFilter = useDebounce(filter, 500);
 
-const Users: FC = () => {
-    const [sorted, setSorted] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');  // Состояние для хранения текста поиска
-
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ['users'],
-        queryFn: () => getUsers().then((response) => response.data)
-    });
-
-    if (isLoading) {
-        return <div className={style.loading}>Loading...</div>;
-    }
-
-    if (isError) {
-        return <div className={style.error}>Error loading users.</div>;
-    }
-
-
-    const filteredUsers = data?.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredUsers = useMemo(
+        () =>
+            users?.filter((user) =>
+                user.name.toLowerCase().includes(debouncedFilter.toLowerCase())
+            ),
+        [users, debouncedFilter]
     );
 
-    const sortedData = filteredUsers?.sort((a, b) => a.name.localeCompare(b.name));
+    const sortedUsers = useMemo(
+        () =>
+            filteredUsers?.sort((a, b) => {
+                if (sortOrder === 'asc') {
+                    return a.name.localeCompare(b.name);
+                } else {
+                    return b.name.localeCompare(a.name);
+                }
+            }),
+        [filteredUsers, sortOrder]
+    );
+
+    if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div>Error: {error?.message}</div>;
 
     return (
-        <div className={style.wrapper}>
-            <h2 className={style.title}>Users</h2>
+        <div>
             <input
                 type="text"
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)} // Обновляем состояние при изменении текста
+                value={filter}
+                onChange={handleFilterChange}
                 className={style.search}
+                placeholder="Filter by name"
             />
-
-            {/* Кнопка сортировки */}
             <button
+                onClick={toggleSortOrder}
                 className={style.btn}
-                onClick={() => setSorted(!sorted)}
             >
-                Sorting
+                Toggle Sort Order
             </button>
-
-            <div className={style.users}>
-                {sorted
-                    ? sortedData?.map((user: UserData) => (
-                        <User
-                            key={user.id}
-                            name={user.name}
-                            email={user.email}
-                            address={user.address.city}
-                        />
-                    ))
-                    : filteredUsers?.map((user: UserData) => (
-                        <User
-                            key={user.id}
-                            name={user.name}
-                            email={user.email}
-                            address={user.address.city}
-                        />
-                    ))
-                }
-            </div>
+            <ul
+                className={style.users}
+            >
+                {sortedUsers?.map((user) => (
+                    <User
+                        key={user.id}
+                        name={user.name}
+                        email={user.email}
+                        address={user.address}
+                    />
+                ))}
+            </ul>
         </div>
     );
 };
 
-export default Users;
+export default UserList;
