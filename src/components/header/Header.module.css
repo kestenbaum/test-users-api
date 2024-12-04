@@ -6,3 +6,10 @@
     right: 0;
     background-color: bisque;
 }
+
+.wrapper {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
