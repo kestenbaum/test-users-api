@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import useUsers from "../../hooks/useUsers.ts";
+
+import { useGetUsers } from "../../hooks/useGetUsers.ts";
 import useUserFilter from "../../hooks/useUserFilter.ts";
 import useUserSort from "../../hooks/useUserSortOrder.ts";
 import useDebounce from "../../hooks/useDebounce.ts";
@@ -7,18 +8,14 @@ import User from "../user/User.tsx";
 import style from "./Users.module.css";
 
 const UserList = () => {
-    const { data: users, isLoading, isError, error } = useUsers();
+    const { data: users = [], isLoading } = useGetUsers();
     const { filter, handleFilterChange } = useUserFilter();
     const { sortOrder, toggleSortOrder } = useUserSort();
     const debouncedFilter = useDebounce(filter, 500);
 
-    const filteredUsers = useMemo(
-        () =>
-            users?.filter((user) =>
-                user.name.toLowerCase().includes(debouncedFilter.toLowerCase())
-            ),
-        [users, debouncedFilter]
-    );
+    const filteredUsers = useMemo(() =>
+            users.filter((user: UserData ) => user.name.toLowerCase().includes(debouncedFilter.toLowerCase())),
+        [users, debouncedFilter]);
 
     const sortedUsers = useMemo(
         () =>
@@ -33,7 +30,6 @@ const UserList = () => {
     );
 
     if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error: {error?.message}</div>;
 
     return (
         <div>
@@ -55,6 +51,7 @@ const UserList = () => {
             >
                 {sortedUsers?.map((user) => (
                     <User
+                        id={user.id}
                         key={user.id}
                         name={user.name}
                         email={user.email}
