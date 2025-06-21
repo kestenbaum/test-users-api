@@ -3,9 +3,9 @@ import {useQuery} from "react-query";
 import { getUsers } from "../api/requests/users";
 
 export const useGetUsers = () => {
-    const { data, isLoading, error } = useQuery<UserData>(
+    const { data, isLoading, error } = useQuery<UserData[]>(
         ["users"],
-        ():Promise<UserData> => getUsers().then(response => response.data),
+        (): Promise<UserData[]> => getUsers().then(response => response.data),
     );
 
     return {
