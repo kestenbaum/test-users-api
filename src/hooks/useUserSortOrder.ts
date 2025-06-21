@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useUserSort = () => {
+export const useUserSort = () => {
     const [sortOrder, setSortOrder] = useState('asc');
 
     const toggleSortOrder = () => {
@@ -10,4 +10,4 @@ const useUserSort = () => {
     return { sortOrder, toggleSortOrder };
 };
 
-export default useUserSort;
+
