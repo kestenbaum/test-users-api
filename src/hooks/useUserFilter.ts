@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import {ChangeEvent, useState} from 'react';
 
 const useUserFilter = () => {
     const [filter, setFilter] = useState('');
 
-    const handleFilterChange = (event) => {
+    const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
         setFilter(event.target.value);
     };
 
