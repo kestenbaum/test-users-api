@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react';
 
-import { useGetUsers } from "../../hooks/useGetUsers.ts";
-import useUserFilter from "../../hooks/useUserFilter.ts";
-import useUserSort from "../../hooks/useUserSortOrder.ts";
-import useDebounce from "../../hooks/useDebounce.ts";
+import {
+    useDebounce,
+    useGetUsers,
+    useUserFilter,
+    useUserSort
+} from "../../hooks";
+
 import User from "../user/User.tsx";
 import style from "./Users.module.css";
 
@@ -19,7 +22,7 @@ const UserList = () => {
 
     const sortedUsers = useMemo(
         () =>
-            filteredUsers?.sort((a, b) => {
+            filteredUsers.sort((a, b) => {
                 if (sortOrder === 'asc') {
                     return a.name.localeCompare(b.name);
                 } else {
@@ -49,7 +52,7 @@ const UserList = () => {
             <ul
                 className={style.users}
             >
-                {sortedUsers?.map((user) => (
+                {sortedUsers.map((user) => (
                     <User
                         id={user.id}
                         key={user.id}
