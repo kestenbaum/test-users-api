@@ -1,6 +1,6 @@
 import {ChangeEvent, useState} from 'react';
 
-const useUserFilter = () => {
+export const useUserFilter = () => {
     const [filter, setFilter] = useState('');
 
     const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -10,4 +10,4 @@ const useUserFilter = () => {
     return { filter, handleFilterChange };
 };
 
-export default useUserFilter;
+
